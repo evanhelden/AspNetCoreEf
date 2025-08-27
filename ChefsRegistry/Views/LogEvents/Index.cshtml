@@ -1,0 +1,61 @@
+﻿@model IEnumerable<ChefsRegistry.Models.LogEventsModel>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/datatables/datatables.min.js"></script>
+<script src="~/lib/datatables/DataTables-1.13.x/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+      $('#LogEvents').DataTable();
+    });
+</script>
+<form>
+    <table id="LogEvents" class="table table-striped table-bordered table-active">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Message)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MessageTemplate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Level)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Timestamp)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Exception)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Properties)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Message)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MessageTemplate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Level)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Timestamp)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Exception)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Properties)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+</form>

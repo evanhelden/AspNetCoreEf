@@ -1,0 +1,76 @@
+﻿@namespace ChefsRegistry
+@model Models.RegistryViewModel
+
+<head>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+@* <form asp-action="Create" method="post"> *@
+<form asp-action="Create" method="post">
+<div style="text-align:center">
+    <p>This page uses ASP.NET Core, MVC 6 and EntityFrameworkCore Stored Procedure(s) for interaction with SQL Server 2022 database.</p>
+</div>
+<div class="grid-container" style="align-content:center; justify-content:center">
+    <div class="grid-item" style="width:400px">Chef Information
+        <div class="form-group">
+            <label asp-for="Chef.FirstName" class="control-label"></label>
+            <input asp-for="Chef.FirstName" class="form-control" />
+            <span asp-validation-for="Chef.FirstName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Chef.LastName" class="control-label"></label>
+            <input asp-for="Chef.LastName" class="form-control" />
+            <span asp-validation-for="Chef.LastName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Chef.ChefNumber" class="control-label"></label>
+            <input asp-for="Chef.ChefNumber" class="form-control" />
+            <span asp-validation-for="Chef.ChefNumber" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="grid-item" style="width:400px">
+        Restaurant Information
+        <div class="form-group">
+            <label asp-for="Restaurant.Name" class="control-label"></label>
+            <input asp-for="Restaurant.Name" class="form-control" />
+            <span asp-validation-for="Restaurant.Name" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Phone.Number" class="control-label"></label>
+            <input asp-for="Phone.Number" class="form-control" />
+            <span asp-validation-for="Phone.Number" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Address.StreetAddress" class="control-label"></label>
+            <input asp-for="Address.StreetAddress" class="form-control" />
+            <span asp-validation-for="Address.StreetAddress" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Address.CityTownVillage" class="control-label"></label>
+            <input asp-for="Address.CityTownVillage" class="form-control" />
+            <span asp-validation-for="Address.CityTownVillage" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Address.StateProvinceRegion" class="control-label"></label>
+            <input asp-for="Address.StateProvinceRegion" class="form-control" />
+            <span asp-validation-for="Address.StateProvinceRegion" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Address.PostalZipCode" class="control-label"></label>
+            <input asp-for="Address.PostalZipCode" class="form-control" />
+            <span asp-validation-for="Address.PostalZipCode" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+            <input type="submit" value="Create" formaction="CreateUDT") class="btn btn-primary" />
+    </div>
+</div>
+</form>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

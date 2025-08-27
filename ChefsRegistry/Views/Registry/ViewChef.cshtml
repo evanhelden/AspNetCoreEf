@@ -1,0 +1,71 @@
+﻿@namespace ChefsRegistry
+@model Models.RegistryChefModel
+
+<head>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+@* <form asp-action="Create" method="post"> *@
+<form asp-action="View" method="post">
+    <div style="text-align:center">
+        <p>This page uses ASP.NET Core, MVC 6 and EntityFrameworkCore Stored Procedure(s) for interaction with SQL Server 2022 database.</p>
+    </div>
+    <div class="grid-container" style="align-content:center; justify-content:center">
+        <div class="grid-item" style="width:400px">
+            Chef Information
+            <div class="form-group">
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" class="form-control" readonly />
+            </div>
+            <div class="form-group">
+                <label asp-for="LastName" class="control-label"></label>
+                <input asp-for="LastName" class="form-control" readonly />
+            </div>
+            <div class="form-group">
+                <label asp-for="ChefNumber" class="control-label"></label>
+                <input asp-for="ChefNumber" class="form-control" readonly />
+            </div>
+        </div>
+        <div class="grid-item" style="width:400px">
+            Restaurant Information
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" readonly />
+            </div>
+            <div class="form-group">
+                <label asp-for="Number" class="control-label"></label>
+                <input asp-for="Number" class="form-control" readonly />
+            </div>
+            <div class="form-group">
+                <label asp-for="StreetAddress" class="control-label"></label>
+                <input asp-for="StreetAddress" class="form-control" readonly />
+            </div>
+            <div class="form-group">
+                <label asp-for="CityTownVillage" class="control-label"></label>
+                <input asp-for="CityTownVillage" class="form-control" readonly />
+            </div>
+            <div class="form-group">
+                <label asp-for="StateProvinceRegion" class="control-label"></label>
+                <input asp-for="StateProvinceRegion" class="form-control" readonly />
+            </div>
+            <div class="form-group">
+                <label asp-for="PostalZipCode" class="control-label"></label>
+                <input asp-for="PostalZipCode" class="form-control" readonly />
+            </div>
+        </div>
+        <div class="form-group">
+             <button type="button" onclick="window.history.back();" class="btn btn-secondary"> 
+                ← Back
+            </button>
+
+        </div>
+    </div>
+</form>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

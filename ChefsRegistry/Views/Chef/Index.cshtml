@@ -1,0 +1,56 @@
+﻿@model IEnumerable<ChefsRegistry.Models.ChefModel>
+<link rel="stylesheet" href="~/lib/datatables.net-dt/css/jquery.dataTables.css" />
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/datatables.net/js/jquery.dataTables.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+      $('#Chefs').DataTable();
+    });
+</script>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<form>
+    <h1>Index</h1>
+    <p>This page uses ASP.NET Core, MVC 6 and EntityFramework Core for interaction with SQL Server 2022 database using UDTT.</p>
+    <table id="Chefs" class="table table-striped table-bordered table-active">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.FirstName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.LastName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ChefNumber)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FirstName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.LastName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ChefNumber)
+                    </td>
+                    <td>
+                        <a asp-action="View" asp-route-id="@item.ID">View</a> |
+                        <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                        <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</form>
