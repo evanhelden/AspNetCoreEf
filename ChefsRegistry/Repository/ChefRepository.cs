@@ -28,14 +28,14 @@ namespace ChefsRegistry.Repository
         {
             try
             {
-                _context.Chefs.ToList();
+                _context.tbl_Chefs.ToList();
                 _logInfoRepository.LogInformation("Chef Repository GetAll method called", "Success", "Information");
             }
             catch(Exception ex) 
             {
                 _logger.LogError(ex, "Chef Repository GetAll method error");
             }
-            return _context.Chefs;            
+            return _context.tbl_Chefs;            
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace ChefsRegistry.Repository
             var chef = new ChefModel();
             try
             {
-                chef = _context.Chefs.Find(id);
+                chef = _context.tbl_Chefs.Find(id);
                 _logInfoRepository.LogInformation("Chef Repository GetById method called", "Success", "Information");
             }
             catch (Exception ex)
@@ -67,7 +67,7 @@ namespace ChefsRegistry.Repository
         {
             try
             {
-                _context.Chefs.Add(chef);
+                _context.tbl_Chefs.Add(chef);
                 _context.SaveChanges();
                 _logInfoRepository.LogInformation("Chef Repository Add method called", "Success", "Information");
             }
@@ -85,7 +85,7 @@ namespace ChefsRegistry.Repository
         {
             try
             {
-                _context.Chefs.Update(chef);
+                _context.tbl_Chefs.Update(chef);
                 _context.SaveChanges();
                 _logInfoRepository.LogInformation("Chef Repository Update method called", "Success", "Information");
             }
@@ -103,7 +103,7 @@ namespace ChefsRegistry.Repository
         {
             try
             {
-                var chef = _context.Chefs.Find(id);
+                var chef = _context.tbl_Chefs.Find(id);
                 if (chef != null)
                 {
                     var param = new SqlParameter("@ChefID", id);
@@ -128,7 +128,7 @@ namespace ChefsRegistry.Repository
         {
             try
             {
-                _context.Chefs.Add(chef);
+                _context.tbl_Chefs.Add(chef);
                 _context.SaveChanges();
                 _logInfoRepository.LogInformation("Chef Repository AddChef method called for chef last name" + chef.LastName, "Success", "Information");
             }
