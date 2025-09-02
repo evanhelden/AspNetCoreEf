@@ -119,7 +119,7 @@ GO
 USE [Chef]
 GO
 
-CREATE TABLE Chefs (
+CREATE TABLE tbl_Chefs (
     ID INT IDENTITY(1,1) PRIMARY KEY,
     FirstName nvarchar(50) NOT NULL,
     LastName nvarchar(50) NOT NULL,    
@@ -127,7 +127,7 @@ CREATE TABLE Chefs (
 
 );
 
-CREATE TABLE [Address] (
+CREATE TABLE tbl_Address (
     ID INT IDENTITY(1,1) PRIMARY KEY,
     StreetAddress nvarchar(50) NOT NULL,
     CityTownVillage nvarchar(50),
@@ -139,7 +139,7 @@ CREATE TABLE [Address] (
 
 GO
 
-CREATE TABLE Phone (
+CREATE TABLE tbl_Phone (
 	ID INT IDENTITY(1,1) PRIMARY KEY,
 	Number nvarchar(20) NOT NULL,
 	ChefID INT,
@@ -148,7 +148,7 @@ CREATE TABLE Phone (
 
 GO
 
-CREATE TABLE Restaurant (
+CREATE TABLE tbl_Restaurant (
 	ID INT IDENTITY(1,1) PRIMARY KEY,
 	[Name] nvarchar(20) NOT NULL,
 	PhoneID INT,
@@ -159,7 +159,7 @@ CREATE TABLE Restaurant (
 GO
 
 
-CREATE TABLE [LogEvents] (
+CREATE TABLE LogEvents (
     [Id] INT IDENTITY(1,1) PRIMARY KEY,
     [Message] NVARCHAR(100),
     [MessageTemplate] NVARCHAR(100),
@@ -171,43 +171,43 @@ CREATE TABLE [LogEvents] (
 
 GO
 
-ALTER TABLE Phone
-ADD CONSTRAINT FK_Phone_Chefs
+ALTER TABLE tbl_Phone
+ADD CONSTRAINT FK_tbl_Phone_tbl_Chefs
 FOREIGN KEY (ChefID)
-REFERENCES Chefs(ID)
+REFERENCES tbl_Chefs(ID)
 ON DELETE CASCADE
 ON UPDATE CASCADE;
 
 GO
 
-ALTER TABLE [Address]
-ADD CONSTRAINT FK_Address_Chefs
+ALTER TABLE tbl_Address
+ADD CONSTRAINT FK_tbl_Address_tbl_Chefs
 FOREIGN KEY (ChefID)
-REFERENCES Chefs(ID)
+REFERENCES tbl_Chefs(ID)
 ON DELETE CASCADE
 ON UPDATE CASCADE;
 
 GO
 
-ALTER TABLE Restaurant
-ADD CONSTRAINT FK_Restaurant_Chefs
+ALTER TABLE tbl_Restaurant
+ADD CONSTRAINT FK_tbl_Restaurant_tbl_Chefs
 FOREIGN KEY (ChefID)
-REFERENCES Chefs(ID)
+REFERENCES tbl_Chefs(ID)
 ON DELETE CASCADE
 ON UPDATE CASCADE;
 
 GO
 
-CREATE NONCLUSTERED INDEX IX_Address_ChefID
-ON dbo.[Address] (ChefID);
+CREATE NONCLUSTERED INDEX IX_Address_tbl_ChefID
+ON dbo.tbl_Address (ChefID);
 GO
 
 CREATE NONCLUSTERED INDEX IX_Phone_ChefID
-ON dbo.Phone (ChefID);
+ON dbo.tbl_Phone (ChefID);
 GO
 
 CREATE NONCLUSTERED INDEX IX_Restaurant_ChefID
-ON dbo.Restaurant (ChefID);
+ON dbo.tbl_Restaurant (ChefID);
 GO
 
 -- ================================
@@ -217,7 +217,7 @@ USE [Chef]
 GO
 
 -- Create the data type
-CREATE TYPE RegistryModel AS TABLE 
+CREATE TYPE udtt_RegistryModel AS TABLE 
 (
 	FirstName NVARCHAR(30),
 	LastName NVARCHAR(50),	
@@ -243,9 +243,9 @@ GO
 -- Description:	Create Chef into mutiple tables with Parent - Child relationships
 --              using TSQL
 -- =============================================
-CREATE OR ALTER PROCEDURE CreateChef 
+CREATE PROCEDURE sp_CreateChef 
 
-	@RegModel RegistryModel READONLY
+	@RegModel udtt_RegistryModel READONLY
 AS
 BEGIN
 
@@ -261,31 +261,31 @@ DECLARE @PhoneID INT;
 		BEGIN TRANSACTION;
 
 
-			INSERT INTO Chefs (FirstName, LastName, ChefNumber)
+			INSERT INTO tbl_Chefs (FirstName, LastName, ChefNumber)
 			SELECT FirstName, LastName, ChefNumber
 			FROM @RegModel;
 
 			SET @ChefID = SCOPE_IDENTITY();
 
-			INSERT INTO Restaurant ([Name], ChefID)
+			INSERT INTO tbl_Restaurant ([Name], ChefID)
 			SELECT [Name], @ChefID
 			FROM @RegModel;
 
 			SET @RestaurantID = SCOPE_IDENTITY();
 
-			INSERT INTO [Address] (StreetAddress, CityTownVillage, PostalZipCode, StateProvinceRegion, ChefID, RestaurantID)
+			INSERT INTO tbl_Address (StreetAddress, CityTownVillage, PostalZipCode, StateProvinceRegion, ChefID, RestaurantID)
 			SELECT StreetAddress, CityTownVillage, PostalZipCode, StateProvinceRegion, @ChefID, @RestaurantID
 			from @RegModel;
 
 			SET @AddressID = SCOPE_IDENTITY();
 
-			INSERT INTO Phone (Number, ChefID, RestaurantID)
+			INSERT INTO tbl_Phone (Number, ChefID, RestaurantID)
 			SELECT [Number], @ChefID, @RestaurantID
 			FROM @RegModel;
 
 			SET @PhoneID = SCOPE_IDENTITY();
 
-			UPDATE Restaurant
+			UPDATE tbl_Restaurant
 			SET PhoneID = @PhoneID, AddressID = @AddressID
 			WHERE ChefID = @ChefID;
 
@@ -314,7 +314,7 @@ GO
 -- Create date: 
 -- Description:	Get Chef By ID and return in User Defined Table using TSQL
 -- =============================================
-CREATE OR ALTER PROCEDURE [dbo].[GetChef] 
+CREATE PROCEDURE sp_GetChef
 
 	 @ChefID INT
 AS
@@ -322,7 +322,7 @@ BEGIN
 
 	SET NOCOUNT ON;
 
-	DECLARE @RegModel dbo.RegistryModel;;
+	DECLARE @RegModel udtt_RegistryModel;
 
 	BEGIN TRY
 
@@ -348,11 +348,11 @@ BEGIN
 					a.PostalZipCode,
 					a.StateProvinceRegion,
 					p.Number
-			FROM	Chefs AS c
-			JOIN	Restaurant AS r ON r.ChefID = c.ID
-			JOIN	[Address] AS a ON a.ChefID = c.ID
-			JOIN	Phone AS p ON p.ChefID = c.ID
-			WHERE c.ID = @ChefID
+			FROM	tbl_Chefs AS c
+			JOIN	tbl_Restaurant AS r ON r.ChefID = c.ID
+			JOIN	tbl_Address AS a ON a.ChefID = c.ID
+			JOIN	tbl_Phone AS p ON p.ChefID = c.ID
+			WHERE	c.ID = @ChefID
 					AND r.ChefID = @ChefID
 					AND a.ChefID = @ChefID
 					AND p.ChefID = @ChefID;
@@ -381,8 +381,8 @@ GO
 -- Create date: 
 -- Description:	Update Chef By ID with passing in User Defined Table using TSQL
 -- =============================================
-CREATE OR ALTER PROCEDURE [dbo].[UpdateChef] 
-	 @RegModel RegistryModel READONLY,
+CREATE PROCEDURE sp_UpdateChef 
+	 @RegModel udtt_RegistryModel READONLY,
 	 @ChefID INT
 AS
 BEGIN
@@ -393,12 +393,12 @@ BEGIN
 
 			UPDATE	P
 			SET		P.Number = R.Number
-			FROM Phone P
+			FROM	tbl_Phone P
 			INNER JOIN @RegModel R ON P.ChefID = @ChefID;
 
 			UPDATE	RE 
 			SET		RE.[Name] = R.[Name]
-			FROM Restaurant RE
+			FROM	tbl_Restaurant RE
 			INNER JOIN @RegModel R ON RE.ChefID = @ChefID;
 
 			UPDATE	A
@@ -406,7 +406,7 @@ BEGIN
 					A.CityTownVillage = R.CityTownVillage, 
 					A.PostalZipCode = R.PostalZipCode, 
 					A.StateProvinceRegion = R.StateProvinceRegion
-			FROM [Address] A
+			FROM	tbl_Address A
 			INNER JOIN @RegModel R ON A.ChefID = @ChefID;
 
 			UPDATE C
@@ -414,7 +414,7 @@ BEGIN
 					C.FirstName = R.FirstName,
 					C.LastName = R.LastName,
 					C.ChefNumber = R.ChefNumber
-			FROM Chefs C
+			FROM	tbl_Chefs C
 			INNER JOIN @RegModel R ON C.ID = @ChefID;
 
 	END TRY
@@ -439,7 +439,7 @@ GO
 -- Create date: 
 -- Description:	Delete Chef By ID from all tables
 -- =============================================
-CREATE OR ALTER PROCEDURE [dbo].[DeleteChef] 
+CREATE PROCEDURE sp_DeleteChef
 
 	 @ChefID INT
 AS
@@ -452,12 +452,12 @@ BEGIN
 		BEGIN TRANSACTION;
 
 			-- Delete from child tables
-			DELETE FROM Phone WHERE ChefID = @ChefID;
-			DELETE FROM Restaurant WHERE ChefID = @ChefID;
-			DELETE FROM Address WHERE ChefID = @ChefID;
+			DELETE FROM tbl_Phone WHERE ChefID = @ChefID;
+			DELETE FROM tbl_Restaurant WHERE ChefID = @ChefID;
+			DELETE FROM tbl_Address WHERE ChefID = @ChefID;
 
 			-- Delete from parent table
-			DELETE FROM Chefs WHERE ID = @ChefID;
+			DELETE FROM tbl_Chefs WHERE ID = @ChefID;
 			
 		COMMIT TRANSACTION;
 	END TRY
