@@ -1,4 +1,4 @@
-﻿using ChefsRegistry.Controllers;
+using ChefsRegistry.Controllers;
 using ChefsRegistry.Models;
 using ChefsRegistry.RepositoryContracts;
 using Microsoft.Data.SqlClient;
@@ -59,7 +59,7 @@ namespace ChefsRegistry.Repository
                     chefRec.SetString(8, chef.Phone.Number);
                     records.Add(chefRec);
 
-                    var command = new SqlCommand("CreateChef", connection);
+                    var command = new SqlCommand("sp_CreateChef", connection);
 
                     using (command)
                     {
@@ -67,7 +67,7 @@ namespace ChefsRegistry.Repository
 
                         SqlParameter parameter = command.Parameters.AddWithValue("@RegModel", records);
                         parameter.SqlDbType = SqlDbType.Structured;
-                        parameter.TypeName = "dbo.RegistryModel";
+                        parameter.TypeName = "dbo.udtt_RegistryModel";
 
                         command.ExecuteNonQuery();
                         _logInfoRepository.LogInformation("Registry Repository CreateChef method called", "Success for Chef Last Name: " + chef.Chef.LastName, "Information");
@@ -101,7 +101,7 @@ namespace ChefsRegistry.Repository
 
             try
             {
-                var query = "EXEC CreateChef @FirstName, @LastName, @MiddleName, @Name, @StreetAddress, @CityTownVillage, @PostalZipCode, @StateProvinceRegion, @Number";
+                var query = "EXEC sp_CreateChef @FirstName, @LastName, @MiddleName, @Name, @StreetAddress, @CityTownVillage, @PostalZipCode, @StateProvinceRegion, @Number";
                 _context.Database.ExecuteSqlRaw(query, sqlParams);
                 _context.SaveChanges();
                 _logInfoRepository.LogInformation("Registry Repository Add method called", "Success for Chef Last Name: " + chef.Chef.LastName, "Information");
@@ -127,7 +127,7 @@ namespace ChefsRegistry.Repository
                     Value = ChefID
                 };
                 var results = _context.RegistryChefModels
-                    .FromSqlRaw("EXEC dbo.GetChef @ChefID", param)
+                    .FromSqlRaw("EXEC dbo.sp_GetChef @ChefID", param)
                     .AsNoTracking()
                     .ToList();
 
@@ -181,7 +181,7 @@ namespace ChefsRegistry.Repository
                     chefRec.SetString(8, chef.Number);
                     records.Add(chefRec);
 
-                    var command = new SqlCommand("UpdateChef", connection);
+                    var command = new SqlCommand("sp_UpdateChef", connection);
 
                     using (command)
                     {
@@ -189,7 +189,7 @@ namespace ChefsRegistry.Repository
 
                         SqlParameter parameter = command.Parameters.AddWithValue("@RegModel", records);
                         parameter.SqlDbType = SqlDbType.Structured;
-                        parameter.TypeName = "dbo.RegistryModel";
+                        parameter.TypeName = "dbo.udtt_RegistryModel";
 
                         SqlParameter parameter2 = command.Parameters.AddWithValue("@ChefID", ID);
                         parameter2.SqlDbType = SqlDbType.Int;
