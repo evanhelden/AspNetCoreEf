@@ -107,7 +107,7 @@ namespace ChefsRegistry.Repository
                 if (chef != null)
                 {
                     var param = new SqlParameter("@ChefID", id);
-                    _context.Database.ExecuteSqlRawAsync("EXEC DeleteChef @ChefID", param);
+                    _context.Database.ExecuteSqlRawAsync("EXEC sp_DeleteChef @ChefID", param);
                 }
                 else
                 {
